@@ -1,5 +1,13 @@
 FROM ruby:latest
 
+# add neset nodejs repo
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+
+# add newest yarn repo
+ADD https://dl.yarnpkg.com/debian/pubkey.gpg /tmp/yarn-pubkey.gpg
+RUN apt-key add /tmp/yarn-pubkey.gpg && rm /tmp/yarn-pubkey.gpg
+RUN echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list
+
 # Use virtual build-dependencies tag so we can remove these packages after bundle install
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs ruby-dev git yarn
 
@@ -16,7 +24,6 @@ RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
 # Setting env up
-ARG RAILS_ENV
 ENV RAILS_ENV=$RAILS_ENV
 ENV RAKE_ENV=$RAILS_ENV
 ENV RACK_ENV=$RAILS_ENV
@@ -37,6 +44,7 @@ RUN if [[ "$RAILS_ENV" == "production" ]]; then\
 # Adding project files
 COPY . .
 
+RUN yarn install
 RUN bundle exec rake assets:precompile
 
 # EXPOSE 3000
