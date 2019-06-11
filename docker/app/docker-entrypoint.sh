@@ -7,4 +7,6 @@ if [[ "$RAILS_ENV" == "production" ]]; then\
   bundle install --jobs 20 --retry 5 --without development test;\
   else bundle install --jobs 20 --retry 5; fi
 
+yarn install
+
 bundle exec puma -C "config/puma.rb"

@@ -27,8 +27,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
-      args:
-        RAILS_ENV: development
     env_file:
       - .env.development
     depends_on:
