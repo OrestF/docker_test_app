@@ -12,10 +12,7 @@ RUN echo 'deb http://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs ruby-dev git yarn
 
 # Set an environment variable where the Rails app is installed to inside of Docker image
-ENV RAILS_ROOT /var/www/app_name
-
-# Set an environment variable where the Rails app is installed to inside of Docker image
-ENV RAILS_ROOT /var/www/app_name
+ENV RAILS_ROOT /var/www/$APP_NAME
 
 # make a new directory where our project will be copied
 RUN mkdir -p $RAILS_ROOT
@@ -50,4 +47,5 @@ RUN bundle exec rake assets:precompile
 # EXPOSE 3000
 
 # CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
-ENTRYPOINT ["sh", "/var/www/app_name/docker/app/docker-entrypoint.sh"]
+RUN ["chmod", "+x", "./docker/app/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "./docker/app/docker-entrypoint.sh"]
